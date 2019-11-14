@@ -17,4 +17,14 @@ Class DefaultController extends AbstractController
             'website' => 'Wild Séries',
         ]);
     }
+
+    /**
+     * @Route("/wild", name="wild_index")
+     */
+    public function home(): Response
+    {
+        return $this->render('wild/index.html.twig', [
+            'website' => 'Wild Séries',
+        ]);
+    }
 }

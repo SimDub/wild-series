@@ -2,4 +2,10 @@ body {
     background-color: lightblue;
 }
 
+$theme-colors: (
+        "primary": #0074d9,
+        "danger": #ff4136,
+        "custom-color" : #ff3
+);
+
 @import "~bootstrap/scss/bootstrap";
