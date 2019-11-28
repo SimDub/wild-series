@@ -32,7 +32,7 @@ class Episode
     private $synopsis;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\season", inversedBy="episode")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Season", inversedBy="episode")
      * @ORM\JoinColumn(nullable=false)
      */
     private $season;

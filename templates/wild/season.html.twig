@@ -13,7 +13,7 @@
                     <h4>Liste des épisodes</h4>
                     {% for episode in season.episode %}
                         <div class="col-md-10 offset-md-1">
-                            <p class="episode">Episode {{ episode.number }} : {{ episode.title }}</p>
+                            <a class="episode" href="{{ path('wild_episode') }}/{{ episode.id }}">Episode {{ episode.number }} : {{ episode.title }}</a>
                             <p>{{ episode.synopsis }}</p>
                         </div>
                     {% endfor %}
