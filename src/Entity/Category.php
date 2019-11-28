@@ -41,10 +41,12 @@ class Category
     }
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Program", mappedBy="category"
+     * @ORM\OneToMany(targetEntity="App\Entity\Program", mappedBy="category")
      */
     private $programs;
+
     public function __construct()
+
     {
         $this->programs = new ArrayCollection();
     }
@@ -53,6 +55,7 @@ class Category
      * @return Collection|Program[]
      */
     public function getPrograms(): Collection
+
     {
         return $this->programs;
     }
@@ -62,8 +65,10 @@ class Category
      * @return Category
      */
     public function addProgram(Program $program): self
+
     {
         if (!$this->programs->contains($program)) {
+
             $this->programs[] = $program;
             $program->setCategory($this);
         }
@@ -84,7 +89,6 @@ class Category
                 $program->setCategory(null);
             }
         }
-
         return $this;
     }
 }
