@@ -6,7 +6,10 @@ use App\Entity\Category;
 use App\Entity\Episode;
 use App\Entity\Program;
 use App\Entity\Season;
+use App\Form\CategoryType;
+use App\Form\ProgramSearchType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -18,23 +21,26 @@ class WildController extends AbstractController
      * @Route("/wild", name="wild_index")
      * @return Response A response instance
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $programs = $this->getDoctrine()
-            ->getRepository(Program::class)
-            ->findAll();
+        $form = $this->createForm(ProgramSearchType::class);
+        $form->handleRequest($request);
 
-        if (!$programs) {
-            throw  $this->createNotFoundException(
-                'No program found in program\'s table.'
-            );
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            $programs = $this->getDoctrine()
+                ->getRepository(Program::class)
+                ->findBy(['title' => $data['searchField']]);
+        } else {
+            $programs = $this->getDoctrine()
+                ->getRepository(Program::class)
+                ->findAll();
         }
 
-
-        return $this->render(
-            'wild/index.html.twig',
-            ['programs'=> $programs]
-        );
+        return $this->render('wild/index.html.twig', [
+            'programs'=> $programs,
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -70,18 +76,20 @@ class WildController extends AbstractController
 
     /**
      *
-     *@Route("/wild/category/{categoryName}", name="show_category")
+     *@Route("/wild/category/{categoryName}", defaults={"categoryName" = null}, name="show_category")
      *@return Response
      */
     public function showByCategory(?string $categoryName):Response
     {
-        if (!$categoryName) {
-            throw $this
-                ->createNotFoundException('No categoryName has been sent to find a program in program\'s table.');
+        if ($categoryName === null) {
+            $category = $this->getDoctrine()
+                ->getRepository(Category::class)
+                ->findAll();
+        } else {
+            $category = $this->getDoctrine()
+                ->getRepository(Category::class)
+                ->findBy(array('name' => ucfirst(mb_strtolower($categoryName))));
         }
-        $category = $this->getDoctrine()
-            ->getRepository(Category::class)
-            ->findBy(array('name' => ucfirst(mb_strtolower($categoryName))));
 
         $programs = $this->getDoctrine()
             ->getRepository(Program::class)
@@ -101,7 +109,7 @@ class WildController extends AbstractController
         return $this->render('wild/category.html.twig', [
             'programs' => $programs,
             'categoryName'  => $categoryName,
-            'category' => $category
+            'category' => $category,
         ]);
     }
 
