@@ -5,8 +5,9 @@ namespace App\DataFixtures;
 use App\Entity\Program;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class ProgramFixtures extends Fixture
+class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
     const PROGRAMS = [
 
@@ -83,9 +84,14 @@ class ProgramFixtures extends Fixture
             $manager->persist($program);
             $this->addReference('program_' . $i, $program);
             $i++;
-            $program->setCategory($this->getReference('categorie_0'));
+            $program->setCategory($this->getReference('categorie_'.rand(0,4)));
         }
 
         $manager->flush();
+    }
+    public function getDependencies()
+
+    {
+        return [CategoryFixtures::class];
     }
 }
